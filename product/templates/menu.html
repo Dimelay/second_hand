@@ -1,0 +1,51 @@
+<style>
+.container {
+margin: 0 auto;
+    padding: 1.5em 1em;
+    position: relative;
+     text-align: center;
+}
+header {
+    background-color: #ccc;
+    height: 80px;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+header nav {
+    padding: 0.5em 0;
+    width: 100%;
+}
+header li {
+    display: inline-block;
+    font-size: 1em;
+    margin: 0;
+    padding: 0 0 0 2em;
+    position: relative;
+    text-transform: uppercase;
+}
+header li:last-child::after {
+    display: none;
+}
+header li a {
+    border-bottom: 1px solid transparent;
+    text-decoration: none;
+}
+header li a:hover, header li a.active {
+    border-bottom-color: #5a5c5b;
+    text-decoration: none;
+}
+    </style>
+<header>
+<div class="container">
+<ul >
+<li ><a href="#">Главная</a></li>
+<li ><a href="/cart">Карты</a></li>
+<li ><a href="#">CSS</a></li>
+<li ><a href="#" id="nowopen">PHP</a></li>
+<li ><a href="#">SEO</a></li>
+</ul>
+</div>
+</header>

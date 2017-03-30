@@ -1,0 +1,17 @@
+<div id="{{product.id}}">
+<input type="hidden" name="pid[]" value="{{product.pid}}" class="pid">
+<table width='50%' border=1 cellspasing=0 cellpadding=3 bordercolor=#336699 >
+<td class="ui-widget-header" >Наименование</td>
+<td class="ui-widget-header">Описание</td>
+<td class="ui-widget-header">Фото</td>
+<td class="ui-widget-header">Цена</td>
+<td class="ui-widget-header">Удалить</td>
+<tr>
+<td>{{product.name}}</td>
+<td>{{product.description}}</td>
+<td><img src={{MEDIA_URL}}/{{product.photo}} /></td>
+<td><p class="price" value='{{product.price}}'>{{product.price}}</p></td>
+<td ><a href="#" class="remove_product">Удалить</a> </td>
+</table>
+</div>
+<br>

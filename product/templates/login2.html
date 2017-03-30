@@ -1,0 +1,35 @@
+<script type="text/javascript"></script>
+       
+{% if auth_form.errors %}
+<a class="ui-state-error">
+{% for error in auth_form.non_field_errors %}
+    {{error}}
+{% endfor %}
+</a>
+{% endif %}
+<!--div style="display: table-cell; width: 800px; height: 600px; vertical-align: middle; "!-->
+<div style="
+    top: 50%; 
+    left: 50%; 
+    position: absolute; 
+    margin-top: -225px;
+    margin-left: -225px;
+    text-align :center;
+">
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+<table>
+<tr>
+    <td class="ui-state-default">{{ auth_form.username.label_tag }}</td>
+        <td class="ui-widget">{{ auth_form.username }}</td>
+        
+        </tr>
+        <tr>
+            <td class="ui-state-default">{{ auth_form.password.label_tag }}</td>
+                <td class="ui-widget"> {{ auth_form.password }}</td>
+                </tr>
+                </table>
+               <input type="submit" class="ui-button" value="Вход"/>
+                </form>
+      </div>
+

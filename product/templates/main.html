@@ -1,0 +1,28 @@
+
+{% extends "base.html" %}
+{% block title %} Рабочий кабинет {% endblock %}
+{% block content %}
+{{request.user.last_name}} {{request.user.first_name}}<br>
+<br>
+{{ searchpoint.media }}
+<center>
+<form id="form_bd">
+{{ bd }}
+
+<input type="submit" value="Оплатить" />
+</form>
+<form id="form_searchpoint">
+{{ searchpoint }}
+</form>
+Сумма : <p id="all_price"></p>
+<form id="product_sale">
+{% csrf_token %}
+<input type="submit" value="Оплатить" />
+<input type="checkbox" id="reverse" name="reverse" value="1"> Возврат
+<div id="product" style="overflow: auto; width: 60%; height: 70%;">
+</div>
+</form>
+История:
+</center>
+<a href="{% url 'logout' %}">Logout</a><br>
+{% endblock %}

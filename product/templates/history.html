@@ -1,0 +1,17 @@
+{% load temp %}
+приход {{ log|get_summ:'in'}} Расход {{ log|get_summ:'out'}}
+<table border='1'>
+<td>Вид товара</td>
+<td>Название</td>
+<td>Действие</td>
+<td>Фото</td>
+<td>Цена</td><tr>
+{% for i in log %}
+
+<td>{{i.product_id.product_type}}</td>
+<td>{{i.product_id.name}}</td>
+<td>{{i.action}}</td>
+<td><img src={{MEDIA_URL}}/{{i.product_id.photo}} /></td>
+<td>{{i.product_id.price}}</td><tr>
+{% endfor %}
+</table>

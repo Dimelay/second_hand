@@ -1,0 +1,15 @@
+<html>
+<head>
+<title>{% block title %}{% endblock %}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+{% load static %}
+<script src="{% static "jq/external/jquery/jquery.js" %}"></script>
+<script src="{% static "jq/jquery-ui.min.js" %}"></script>
+<link href="{% static  "themes/cupertino/jquery-ui.min.css" %}" rel="stylesheet" type="text/css" />
+{% block my_script %}{% endblock %}
+ 
+</head>
+<div class='ui-widget-content' style="height:100%;">
+{%block content %}{% endblock %}
+</div>
+</html>
