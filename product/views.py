@@ -70,10 +70,15 @@ def get_product(request,pid,rev):
     return render(request,"product.html",{'product':pr})
 
 @login_required(redirect_field_name=None)
+@permission_required('product.print_barcode',raise_exception=True)
 def get_barcode(request):
+    if request.method == 'GET':
+        barcodedate = PrintBarcodeByData()
+        return render(request,"bar.html",{'bd':barcodedate})
     if request.method == 'POST':
         bar_pid = PrintBarcodeByData(request.POST)
-        print bar_pid.bar_date
+        if bar_pid.is_valid():
+            print bar_pid.cleaned_data.get("bar_date_day")
     return HttpResponse('OK')
 
 @login_required(redirect_field_name=None)

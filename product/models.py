@@ -46,6 +46,9 @@ class sale_log(models.Model):
 
 class product(models.Model):
     class Meta:
+        permissions = (
+            ('print_barcode','Печать ценников'),
+        )
         verbose_name_plural = 'Товар'
         verbose_name = 'Товар'
 

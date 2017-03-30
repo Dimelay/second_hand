@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %} Рабочий кабинет {% endblock %}
+{% block content %}
+{{request.user.last_name}} {{request.user.first_name}}<br>
+<br>
+<form action="/bar/" method="post">
+{% csrf_token %}
+{{ bd }}
+
+<input type="submit" value="Оплатить" />
+</form>
+{% endblock %}
