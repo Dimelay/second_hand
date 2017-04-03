@@ -61,7 +61,7 @@ class product(models.Model):
     pid = models.CharField(max_length=50,verbose_name='Артикул', unique=True, default=gen_pid,editable=False)
     price = models.IntegerField(verbose_name='Цена')
     photo = models.ImageField(upload_to='photo',verbose_name='Фото')
-    description = models.CharField(max_length=255,verbose_name='Краткое описание')
+    description = models.CharField(max_length=255,null=True,verbose_name='Краткое описание')
     product_type = models.ForeignKey('product_type',verbose_name='Вид товара', default=None, null=True, on_delete=models.SET_NULL)
     sold = models.BooleanField(default=False, editable=False)
     def save(self, *args, **kwargs):
