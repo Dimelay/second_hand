@@ -1,17 +1,27 @@
+{% extends "base.html" %}
+{% block title %} История операций {% endblock %}
+{% block content %}
 {% load temp %}
+
+<form action="/bar/" method="post">
+{% csrf_token %}
+{{ date_input }}
+<input type="submit" value="Ok" />
+</form>
 приход {{ log|get_summ:'in'}} Расход {{ log|get_summ:'out'}}
-<table border='1'>
-<td>Вид товара</td>
-<td>Название</td>
-<td>Действие</td>
-<td>Фото</td>
-<td>Цена</td><tr>
+<table style="margin: 0 auto;">
+<td class='ui-widget-header' >Вид товара</td>
+<td class='ui-widget-header'>Название</td>
+<td class='ui-widget-header'>Действие</td>
+<td class='ui-widget-header'>Фото</td>
+<td class='ui-widget-header'>Цена</td><tr>
 {% for i in log %}
 
-<td>{{i.product_id.product_type}}</td>
-<td>{{i.product_id.name}}</td>
-<td>{{i.action}}</td>
-<td><img src={{MEDIA_URL}}/{{i.product_id.photo}} /></td>
-<td>{{i.product_id.price}}</td><tr>
+<td class='ui-wodget-content'>{{i.product_id.product_type}}</td>
+<td class='ui-wodget-content'>{{i.product_id.name}}</td>
+<td class='ui-wodget-content'>{{i.action}}</td>
+<td class='ui-wodget-content'><img src={{MEDIA_URL}}/{{i.product_id.photo}} /></td>
+<td class='ui-wodget-content'>{{i.product_id.price}}</td><tr>
 {% endfor %}
 </table>
+{% endblock %}

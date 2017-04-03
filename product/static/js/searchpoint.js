@@ -1,21 +1,5 @@
 $(document).ready(function(){
 
-/*
-$("#product_sale").bind("submit", function() {
-    
-    $.ajax({
-    type: 'POST',
-    cache: false,
-    url: '/product_sale',
-    data: {"pid": $("input:hidden[name=pid]").val()},
-    success: function(data){
-      $('#my-dialog').remove();  
-        }
-    });
-
-return true;
-});
-*/
 function calc_price() {
 var ap = 0;
 $("#product .price").each(function() {

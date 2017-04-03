@@ -6,7 +6,7 @@ margin: 0 auto;
      text-align: center;
 }
 header {
-    background-color: #ccc;
+    background-color: transparent;
     height: 80px;
     left: 0;
     position: fixed;
@@ -39,13 +39,15 @@ header li a:hover, header li a.active {
 }
     </style>
 <header>
-<div class="container">
+<div class="ui-widget-header">
 <ul >
-<li ><a href="#">Главная</a></li>
-<li ><a href="/cart">Карты</a></li>
-<li ><a href="#">CSS</a></li>
-<li ><a href="#" id="nowopen">PHP</a></li>
-<li ><a href="#">SEO</a></li>
+<li ><a href="/">Главная</a></li>
+{% if perms.product.print_barcode %}
+<li><a href="{% url 'get_barcode' %}">Печать ценников</a></li>
+{% endif %}
+<li><a href="{% url 'history' %}">История</a></li>
+<li >{{request.user.last_name}} {{request.user.first_name}}</li>
+<li><a href="{% url 'logout' %}">Выход</a></li>
 </ul>
 </div>
 </header>

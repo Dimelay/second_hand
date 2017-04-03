@@ -1,0 +1,15 @@
+{% if product %}
+{% for i in product %}
+<table width='100%' style="margin: 0 auto;">
+<td class="ui-widget-header" >Наименование</td>
+<td class="ui-widget-header">Описание</td>
+<td class="ui-widget-header">Фото</td>
+<td class="ui-widget-header">Цена</td>
+<tr>
+<td class='ui-widget-content'>{{i.name}}</td>
+<td class='ui-widget-content'>{{i.description}}</td>
+<td class='ui-widget-content'><img src={{MEDIA_URL}}/{{i.photo}} /></td>
+<td class='ui-widget-content'>{{i.price}} </td>
+</table>
+{% endfor %}
+{% endif %}

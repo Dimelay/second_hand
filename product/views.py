@@ -8,8 +8,9 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from product.models import product, sale_log
-from product.forms import SearchPoint, PrintBarcodeByData
+from product.forms import SearchPoint, date_input
 from django.http import Http404
+from bar import createBarCodes
 import datetime
 
 #from django.views.decorators import csrf
@@ -37,7 +38,7 @@ def sale_product(request):
         reverse = request.POST.get('reverse')
         for i in request.POST.getlist("pid[]"):
             try:
-                print reverse
+                #print reverse
                 if reverse == '1':
                     pr = product.objects.get(pid=i,sold='1')
                     pr.sold = '0'
@@ -56,13 +57,15 @@ def sale_product(request):
 
 @login_required(redirect_field_name=None)
 def history(request):
-    log = sale_log.objects.filter(dates__date=str(datetime.datetime.now())[:10],user_id=request.user)
-    print log.all().count()
-    return render(request,"history.html",{'log':log})
+    if request.method == 'GET':
+        log = sale_log.objects.filter(dates__date=str(datetime.datetime.now())[:10],user_id=request.user)
+#print log.all().count()
+        return render(request,"history.html",{'log':log,'date_input': date_input()})
+
 
 @login_required(redirect_field_name=None)
 def get_product(request,pid,rev):
-    print rev
+    #print rev
     try:
         pr = product.objects.get(pid=pid,sold=rev)
     except product.DoesNotExist:
@@ -73,13 +76,28 @@ def get_product(request,pid,rev):
 @permission_required('product.print_barcode',raise_exception=True)
 def get_barcode(request):
     if request.method == 'GET':
-        barcodedate = PrintBarcodeByData()
-        return render(request,"bar.html",{'bd':barcodedate})
+        pr = False
+        if request.GET:
+            try:
+                in_date = '%s-%s-%s' % (request.GET['date_input_year'],request.GET['date_input_month'],request.GET['date_input_day'])
+                print in_date
+                pr = product.objects.filter(in_date__date=in_date,sold='0')
+                return render(request,"product_list.html",{'product':pr})
+            except:
+                pass
+        return render(request,"bar.html",{'date_input':date_input()})
     if request.method == 'POST':
-        bar_pid = PrintBarcodeByData(request.POST)
+        bar_pid = date_input(request.POST)
         if bar_pid.is_valid():
-            print bar_pid.cleaned_data.get("bar_date_day")
-    return HttpResponse('OK')
+            #print bar_pid.cleaned_data
+            pr = product.objects.filter(in_date__date=str(bar_pid.cleaned_data['date_input']),sold='0')
+            #for i in pr:
+                #print i.name,i.pid,i.price
+            pdf = createBarCodes(pr)
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+            response.write(pdf)
+    return response
 
 @login_required(redirect_field_name=None)
 def user_logout(request):
@@ -89,9 +107,8 @@ def user_logout(request):
 @login_required(redirect_field_name=None)
 def index(request):
 	searchpoint = SearchPoint()
-        barcodedate = PrintBarcodeByData()
         #log = get_log()
-	return render(request,"main.html",{'searchpoint':searchpoint,'bd':barcodedate})
+	return render(request,"main.html",{'searchpoint':searchpoint})
 
 @login_required(redirect_field_name=None)
 @permission_required('point.point_all_view',raise_exception=True)

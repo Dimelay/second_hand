@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% block title %} Рабочий кабинет {% endblock %}
 {% block content %}
-{{request.user.last_name}} {{request.user.first_name}}<br>
-<br>
+{{ date_input.media }}
 <form action="/bar/" method="post">
 {% csrf_token %}
-{{ bd }}
+{{ date_input }}
 
-<input type="submit" value="Оплатить" />
+<input type="submit" value="Ok" />
 </form>
+<div id="product_list" style="margin: 0 auto; overflow: auto; width: 60%; height: 70%;">
+</div>
 {% endblock %}
