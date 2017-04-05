@@ -1,6 +1,6 @@
 <div id="{{product.id}}">
 <input type="hidden" name="pid[]" value="{{product.pid}}" class="pid">
-<table width='100%' style="margin: 0 auto;">
+<table width='80%' style="margin: 0 auto;">
 <td class="ui-widget-header" >Наименование</td>
 <td class="ui-widget-header">Описание</td>
 <td class="ui-widget-header">Фото</td>
@@ -9,7 +9,8 @@
 <tr>
 <td class='ui-widget-content'>{{product.name}}</td>
 <td class='ui-widget-content'>{{product.description}}</td>
-<td class='ui-widget-content'><img src={{MEDIA_URL}}/{{product.photo}} /></td>
+<!-- td class='ui-widget-content'><img src={{MEDIA_URL}}/{{product.photo}} /></td !-->
+<td class='ui-widget-content'><a href={{MEDIA_URL}}/{{product.photo}} rel="lightbox">{{product.get_thum_256}}</a></td>
 <td class='ui-widget-content'><p class="price" value='{{product.price}}'>{{product.price}}</p></td>
 <td class='ui-widget-content'><a href="#" class="remove_product">Удалить</a> </td>
 </table>

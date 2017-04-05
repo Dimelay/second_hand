@@ -8,9 +8,21 @@ import datetime,time,os
 import PIL
 from PIL import Image
 from django.conf import settings
-#from sorl.thumbnail import ImageField, get_thumbnail
+from sorl.thumbnail import get_thumbnail
 #from sorl.thumbnail import ImageField
 # Create your models here.
+from django.utils.safestring import mark_safe
+
+class discont(models.Model):
+    class Meta:
+        verbose_name_plural = 'Скидки'
+        verbose_name = 'Скидки'
+        
+    def __unicode__(self):
+        return self.name
+
+    name = models.CharField(max_length=128, verbose_name='Скидка')
+    procent = models.IntegerField(default=0, verbose_name='Количество')
 
 class product_category(models.Model):
     class Meta:
@@ -55,6 +67,13 @@ class product(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_thum_256(self):
+        im = get_thumbnail(self.photo,'256x256', quality=99, format='JPEG').url
+        return mark_safe('<img src=%s></>' % im)
+    def get_thum_128(self):
+        im = get_thumbnail(self.photo,'128x128', quality=99, format='JPEG').url
+        return mark_safe('<img src=%s></>' % im)
+
     name = models.CharField(max_length=250,verbose_name='Название')
     in_date = models.DateTimeField(verbose_name='Дата привоза', default=datetime.datetime.now())
     out_date = models.DateTimeField(verbose_name='Дата продажи', default=datetime.datetime.now(),null=True, blank=True, editable=False)
@@ -64,6 +83,7 @@ class product(models.Model):
     description = models.CharField(max_length=255,null=True,verbose_name='Краткое описание')
     product_type = models.ForeignKey('product_type',verbose_name='Вид товара', default=None, null=True, on_delete=models.SET_NULL)
     sold = models.BooleanField(default=False, editable=False)
+    """
     def save(self, *args, **kwargs):
        if self.photo:
             #self.photo = get_thumbnail(self.photo, '640x480', quality=99, format='JPEG').url
@@ -76,3 +96,4 @@ class product(models.Model):
             hsize = int((float(img.size[1]) * float(wpercent)))
             img = img.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
             img.save(os.path.join(settings.MEDIA_ROOT, self.photo.name))
+    """

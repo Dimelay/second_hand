@@ -8,7 +8,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from product.models import product, sale_log
-from product.forms import SearchPoint, date_input
+from product.forms import discont_form,SearchPoint, date_input
 from django.http import Http404
 from bar import createBarCodes
 import datetime
@@ -107,8 +107,9 @@ def user_logout(request):
 @login_required(redirect_field_name=None)
 def index(request):
 	searchpoint = SearchPoint()
+        discont = discont_form()
         #log = get_log()
-	return render(request,"main.html",{'searchpoint':searchpoint})
+	return render(request,"main.html",{'searchpoint':searchpoint,'discont':discont})
 
 @login_required(redirect_field_name=None)
 @permission_required('point.point_all_view',raise_exception=True)
