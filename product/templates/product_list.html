@@ -1,4 +1,5 @@
 {% if product %}
+{{ product.count }}
 {% for i in product %}
 <table width='100%' style="margin: 0 auto;">
 <td class="ui-widget-header" >Наименование</td>
@@ -8,7 +9,7 @@
 <tr>
 <td class='ui-widget-content'>{{i.name}}</td>
 <td class='ui-widget-content'>{{i.description}}</td>
-<td class='ui-widget-content'><img src={{MEDIA_URL}}/{{i.photo}} /></td>
+<td class='ui-widget-content'><a href={{MEDIA_URL}}/{{i.photo}} rel="lightbox">{{i.get_thum_256}}</a></td>
 <td class='ui-widget-content'>{{i.price}} </td>
 </table>
 {% endfor %}

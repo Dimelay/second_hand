@@ -17,12 +17,12 @@ class discont(models.Model):
     class Meta:
         verbose_name_plural = 'Скидки'
         verbose_name = 'Скидки'
-        
+
     def __unicode__(self):
         return self.name
 
-    name = models.CharField(max_length=128, verbose_name='Скидка')
-    procent = models.IntegerField(default=0, verbose_name='Количество')
+    name = models.CharField(max_length=128, verbose_name='Название')
+    procent = models.IntegerField(default=0, verbose_name='Процент')
 
 class product_category(models.Model):
     class Meta:
@@ -54,7 +54,8 @@ class sale_log(models.Model):
     dates = models.DateTimeField(default=datetime.datetime.now())
     money_in = models.IntegerField(default=0)
     money_out = models.IntegerField(default=0)
-    action = models.CharField(max_length=255)
+    #action = models.CharField(max_length=255)
+    action = models.BooleanField(verbose_name='Действие', null=False)
 
 class product(models.Model):
     class Meta:
@@ -82,7 +83,7 @@ class product(models.Model):
     photo = models.ImageField(upload_to='photo',verbose_name='Фото')
     description = models.CharField(max_length=255,null=True,verbose_name='Краткое описание')
     product_type = models.ForeignKey('product_type',verbose_name='Вид товара', default=None, null=True, on_delete=models.SET_NULL)
-    sold = models.BooleanField(default=False, editable=False)
+    sold = models.BooleanField(default=False, editable=False, verbose_name='Продано')
     """
     def save(self, *args, **kwargs):
        if self.photo:

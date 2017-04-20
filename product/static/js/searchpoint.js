@@ -1,11 +1,21 @@
 $(document).ready(function(){
 
-function calc_price() {
+$("#id_discont").change(function() {
+var proc = parseInt($(this).val());
+if (proc >0) {
+calc_price(proc);
+}
+else
+{
+calc_price(0)
+}
+});
+function calc_price(procent) {
 var ap = 0;
 $("#product .price").each(function() {
 ap = ap + parseInt($(this).text());
 });
-
+ap = ap - ap/100*parseInt(procent);
 $("#all_price").html(ap);
 }
 
@@ -18,7 +28,7 @@ calc_price();
 });
 
 $("#product").bind("append", function() {
-calc_price();
+calc_price(0);
 });
 
 $("#product_sale").bind("submit", function() {

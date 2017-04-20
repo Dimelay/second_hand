@@ -5,7 +5,7 @@ from product.models import discont
 
 class discont_form(forms.Form):
    # discont = forms.ModelChoiceField(query=discont.objects.all(), widget=forms.RadioSelect)
-    discont = forms.ModelChoiceField(label='Скидка',queryset=discont.objects.all(), to_field_name="procent")
+    discont = forms.ModelChoiceField(label='Скидка',queryset=discont.objects.all(), to_field_name="procent", required=False, empty_label='Без скидки')
 
 class date_input(forms.Form):
     class Media:

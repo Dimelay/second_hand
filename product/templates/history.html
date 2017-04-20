@@ -3,12 +3,13 @@
 {% block content %}
 {% load temp %}
 
-<form action="/bar/" method="post">
+<form action="/history/" method="post">
 {% csrf_token %}
 {{ date_input }}
 <input type="submit" value="Ok" />
 </form>
-приход {{ log|get_summ:'in'}} Расход {{ log|get_summ:'out'}}
+Приход: <b>{{ log|get_summ:'in'}}</b> Расход: <b>{{ log|get_summ:'out'}}</b> Итого: <b>{{ log|get_summ:'result' }}</b>
+
 <table style="margin: 0 auto;">
 <td class='ui-widget-header' >Вид товара</td>
 <td class='ui-widget-header'>Название</td>
@@ -17,11 +18,16 @@
 <td class='ui-widget-header'>Цена</td><tr>
 {% for i in log %}
 
-<td class='ui-wodget-content'>{{i.product_id.product_type}}</td>
-<td class='ui-wodget-content'>{{i.product_id.name}}</td>
-<td class='ui-wodget-content'>{{i.action}}</td>
-<td class='ui-wodget-content'><img src={{MEDIA_URL}}/{{i.product_id.photo}} /></td>
-<td class='ui-wodget-content'>{{i.product_id.price}}</td><tr>
+<td class='ui-widget-content'>{{i.product_id.product_type}}</td>
+<td class='ui-widget-content'>{{i.product_id.name}}</td>
+<td class='ui-widget-content'>{{i.action|yesno:"Продажа,Возврат"}} {{i.dates|time}}</td>
+<td class='ui-widget-content'><a href={{MEDIA_URL}}/{{i.product_id.photo}} rel="lightbox">{{i.product_id.get_thum_256}}</a></td>
+{% if i.money_out > 0 %}
+<td class='ui-widget ui-state-error'>-{{i.money_out}}</td><tr>
+{% endif %}
+{% if i.money_in > 0 %}
+<td class='ui-widget-content'>{{i.money_in}}</td><tr>
+{% endif %}
 {% endfor %}
 </table>
 {% endblock %}

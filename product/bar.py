@@ -39,13 +39,14 @@ def createBarCodes(pr):
         y = y - 10 * mm
         d=d+1
         next_page=next_page+1
-        if d == 9:
+        if d == 10:
             y=780
             a=a+130
             b=b+130
             cc=cc+130
             d=0
-        if next_page == 36:
+        #if next_page == 36:
+        if next_page == 50:
             c.showPage()
             c.setFont("FreeSans",12)
             a=5

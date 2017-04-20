@@ -36,31 +36,40 @@ def sale_product(request):
     err_list=[]
     if request.method == 'POST':
         reverse = request.POST.get('reverse')
+        discont = request.POST.get('discont')
         for i in request.POST.getlist("pid[]"):
             try:
                 #print reverse
                 if reverse == '1':
                     pr = product.objects.get(pid=i,sold='1')
+                    log = sale_log.objects.filter(product_id=pr,action='1').latest('dates')
                     pr.sold = '0'
-                    log = sale_log(product_id=pr,user_id=request.user,action='Возврат',money_out=pr.price)
+                    log = sale_log(product_id=pr,user_id=request.user,action='0',money_out=log.money_in)
                 else:
+                    price = 0
                     pr = product.objects.get(pid=i,sold='0')
                     pr.sold = '1'
-                    log = sale_log(product_id=pr,user_id=request.user,action='Продажа',money_in=pr.price)
+                    if discont:
+                        price = pr.price - pr.price/100*int(discont)
+                    else:
+                        price = pr.price
+                    log = sale_log(product_id=pr,user_id=request.user,action='1',money_in=price)
                 log.save()
                 pr.save()
             except product.DoesNotExist:
                 err_list.append(i)
                 print err_list
-
     return HttpResponse('OK!')
 
 @login_required(redirect_field_name=None)
 def history(request):
     if request.method == 'GET':
-        log = sale_log.objects.filter(dates__date=str(datetime.datetime.now())[:10],user_id=request.user)
+        log = sale_log.objects.filter(dates__date=str(datetime.datetime.now())[:10],user_id=request.user).order_by('-dates')
+    if request.method == 'POST':
+        in_date = '%s-%s-%s' % (request.POST['date_input_year'],request.POST['date_input_month'],request.POST['date_input_day'])
+        log = sale_log.objects.filter(dates__date=in_date,user_id=request.user)
 #print log.all().count()
-        return render(request,"history.html",{'log':log,'date_input': date_input()})
+    return render(request,"history.html",{'log':log,'date_input': date_input()})
 
 
 @login_required(redirect_field_name=None)
@@ -68,6 +77,9 @@ def get_product(request,pid,rev):
     #print rev
     try:
         pr = product.objects.get(pid=pid,sold=rev)
+        if rev=='1':
+            log = sale_log.objects.filter(product_id=pr,action='1').latest('dates')
+            pr.price = log.money_in
     except product.DoesNotExist:
         raise Http404
     return render(request,"product.html",{'product':pr})
@@ -111,7 +123,3 @@ def index(request):
         #log = get_log()
 	return render(request,"main.html",{'searchpoint':searchpoint,'discont':discont})
 
-@login_required(redirect_field_name=None)
-@permission_required('point.point_all_view',raise_exception=True)
-def cart(request):
-    return render(request,"cart.html",{'point': point.objects.exclude(fio='').order_by('fio') })
