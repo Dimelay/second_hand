@@ -17,11 +17,14 @@ class product_type_admin(admin.ModelAdmin):
     list_display = ('product_category','name',)
 
 class product_admin(admin.ModelAdmin):
-    list_display = ('get_thum_128','product_type','name','description','price','sold')
+    list_display = ('get_thum_128','product_type','name','description','price','sold','print_barcode')
     readonly_fields=('pid',)
     list_filter=('sold',)
     list_per_page = 20
 
+    def print_barcode(self,obj):
+        return u'<a target=_blank href=/print_barcode/%s/>Напечатать ценник</a>' % (obj.pid)
+    print_barcode.allow_tags = True
     #def get_category(self,obj):
      #   return obj.product_type.product_category
 

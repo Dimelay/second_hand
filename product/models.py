@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone 
 import datetime,time,os
 import PIL
 from PIL import Image
@@ -51,7 +51,7 @@ def gen_pid():
 class sale_log(models.Model):
     product_id = models.ForeignKey('product')
     user_id = models.ForeignKey(User)
-    dates = models.DateTimeField(default=datetime.datetime.now())
+    dates = models.DateTimeField(default=timezone.now)
     money_in = models.IntegerField(default=0)
     money_out = models.IntegerField(default=0)
     #action = models.CharField(max_length=255)
@@ -76,25 +76,28 @@ class product(models.Model):
         return mark_safe('<img src=%s></>' % im)
 
     name = models.CharField(max_length=250,verbose_name='Название')
-    in_date = models.DateTimeField(verbose_name='Дата привоза', default=datetime.datetime.now())
-    out_date = models.DateTimeField(verbose_name='Дата продажи', default=datetime.datetime.now(),null=True, blank=True, editable=False)
+    in_date = models.DateTimeField(verbose_name='Дата привоза', default=timezone.now)
+    out_date = models.DateTimeField(verbose_name='Дата продажи', default=timezone.now,null=True, blank=True, editable=False)
     pid = models.CharField(max_length=50,verbose_name='Артикул', unique=True, default=gen_pid,editable=False)
     price = models.IntegerField(verbose_name='Цена')
     photo = models.ImageField(upload_to='photo',verbose_name='Фото')
-    description = models.CharField(max_length=255,null=True,verbose_name='Краткое описание')
+    description = models.CharField(max_length=22,null=True,verbose_name='Краткое описание')
     product_type = models.ForeignKey('product_type',verbose_name='Вид товара', default=None, null=True, on_delete=models.SET_NULL)
     sold = models.BooleanField(default=False, editable=False, verbose_name='Продано')
-    """
+
     def save(self, *args, **kwargs):
        if self.photo:
             #self.photo = get_thumbnail(self.photo, '640x480', quality=99, format='JPEG').url
+            try:
+                old_img = product.objects.get(pk=self.pk)
+                if old_img.photo.path != self.photo.path:
+                    old_img.photo.delete(save=False)
+            except product.DoesNotExist:
+                pass
             super(product, self).save(*args, **kwargs)
-            basewidth = 256
-            img = Image.open(os.path.join(settings.MEDIA_ROOT, self.photo.name))
-            if img.mode not in ('L', 'RGB'):
-                img = img.convert('RGB')
+            basewidth = 1024
+            img = Image.open(self.photo.path)
             wpercent = (basewidth / float(img.size[0]))
             hsize = int((float(img.size[1]) * float(wpercent)))
             img = img.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
-            img.save(os.path.join(settings.MEDIA_ROOT, self.photo.name))
-    """
+            img.save(self.photo.path, format='JPEG', quality=50)

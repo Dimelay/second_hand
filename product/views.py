@@ -11,7 +11,7 @@ from product.models import product, sale_log
 from product.forms import discont_form,SearchPoint, date_input
 from django.http import Http404
 from bar import createBarCodes
-import datetime
+import datetime, cups
 
 #from django.views.decorators import csrf
 #from django.views.decorators.csrf import csrf_protect
@@ -83,6 +83,29 @@ def get_product(request,pid,rev):
     except product.DoesNotExist:
         raise Http404
     return render(request,"product.html",{'product':pr})
+
+@login_required(redirect_field_name=None)
+def print_barcode(request,pid):
+    try:
+        pr = product.objects.get(pid=pid)
+        #response = HttpResponse(content_type='application/pdf')
+        #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+        #response.write(pdf)
+    except product.DoesNotExist:
+        raise Http404
+
+    pdf = createBarCodes(pr)
+    conn = cups.Connection()
+    printers = conn.getPrinters()
+    #for printer in printers:
+     #   print printer, printers[printer]
+    printer_name = printers.keys()[0]
+    job_id = conn.createJob(printer_name, '', {})
+    conn.startDocument(printer_name, job_id,'', cups.CUPS_FORMAT_RAW,1)
+    conn.writeRequestData(pdf,len(pdf))
+    conn.finishDocument(printer_name)
+    #conn.printFile(printer_name,'/tmp/barcodes.pdf',"Python print",{})
+    return HttpResponse('<script type=\"text/javascript\">self.close();</script>')
 
 @login_required(redirect_field_name=None)
 @permission_required('product.print_barcode',raise_exception=True)
