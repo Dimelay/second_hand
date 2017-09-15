@@ -67,7 +67,7 @@ rev = 0
     type: 'GET',
     cache: false,
     url: 'product/'+$("#id_pid").val()+'/'+rev,
-    success: function(data){$('#product').append(data).trigger("append");}
+    success: function(data){$('#product').prepend(data).trigger("append");}
     });
     $("#id_pid").val('');
     /*

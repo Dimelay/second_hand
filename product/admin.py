@@ -19,8 +19,15 @@ class product_type_admin(admin.ModelAdmin):
 class product_admin(admin.ModelAdmin):
     list_display = ('get_thum_128','product_type','name','description','price','sold','print_barcode')
     readonly_fields=('pid',)
+    search_fields = ('name','description')
     list_filter=('sold',)
     list_per_page = 20
+
+    def get_readonly_fields(self, request, obj=None):
+        self.readonly_fields = ('pid',)
+        if obj and obj.sold == True:
+            self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
+        return self.readonly_fields
 
     def print_barcode(self,obj):
         return u'<a target=_blank href=/print_barcode/%s/>Напечатать ценник</a>' % (obj.pid)

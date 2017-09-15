@@ -7,6 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.utils.formats import get_format
 from product.models import product, sale_log
 from product.forms import discont_form,SearchPoint, date_input
 from django.http import Http404
@@ -50,15 +51,17 @@ def sale_product(request):
                     pr = product.objects.get(pid=i,sold='0')
                     pr.sold = '1'
                     if discont:
-                        price = pr.price - pr.price/100*int(discont)
+                        d_discont = pr.price/100*int(discont)
+                        price = pr.price - d_discont
                     else:
+                        d_discont = 0
                         price = pr.price
-                    log = sale_log(product_id=pr,user_id=request.user,action='1',money_in=price)
+                    log = sale_log(product_id=pr,user_id=request.user,action='1',money_in=price,discont=d_discont)
                 log.save()
                 pr.save()
             except product.DoesNotExist:
                 err_list.append(i)
-                print err_list
+                #print err_list
     return HttpResponse('OK!')
 
 @login_required(redirect_field_name=None)
@@ -66,10 +69,18 @@ def history(request):
     if request.method == 'GET':
         log = sale_log.objects.filter(dates__date=str(datetime.datetime.now())[:10],user_id=request.user).order_by('-dates')
     if request.method == 'POST':
-        in_date = '%s-%s-%s' % (request.POST['date_input_year'],request.POST['date_input_month'],request.POST['date_input_day'])
-        log = sale_log.objects.filter(dates__date=in_date,user_id=request.user)
-#print log.all().count()
+        d_form = date_input(request.POST)
+        if d_form.is_valid():
+            #log = sale_log.objects.filter(dates__date=request.POST['start_date'],user_id=request.user)
+            input_format = get_format('DATE_INPUT_FORMATS')[0]
+            start_date = datetime.datetime.strptime(request.POST['start_date'],input_format)
+            end_date = datetime.datetime.strptime(request.POST['end_date'],input_format)
+            if request.user.has_perm('product.view_all'):
+                log = sale_log.objects.filter(dates__range=(start_date,end_date))
+            else:
+                log = sale_log.objects.filter(dates__range=(start_date,end_date+datetime.timedelta(days=1)),user_id=request.user)
     return render(request,"history.html",{'log':log,'date_input': date_input()})
+    #return render(request,"history.html",{'date_input':date_input()})
 
 
 @login_required(redirect_field_name=None)

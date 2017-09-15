@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone 
+from django.utils import timezone
 import datetime,time,os
 import PIL
 from PIL import Image
@@ -49,12 +49,17 @@ def gen_pid():
     return time.mktime(datetime.datetime.now().timetuple())
 
 class sale_log(models.Model):
+    class Meta:
+        permissions = (
+        ('view_all','История всех пользователей'),
+        )
     product_id = models.ForeignKey('product')
     user_id = models.ForeignKey(User)
     dates = models.DateTimeField(default=timezone.now)
     money_in = models.IntegerField(default=0)
     money_out = models.IntegerField(default=0)
     #action = models.CharField(max_length=255)
+    discont = models.IntegerField(default=0)
     action = models.BooleanField(verbose_name='Действие', null=False)
 
 class product(models.Model):
@@ -79,6 +84,7 @@ class product(models.Model):
     in_date = models.DateTimeField(verbose_name='Дата привоза', default=timezone.now)
     out_date = models.DateTimeField(verbose_name='Дата продажи', default=timezone.now,null=True, blank=True, editable=False)
     pid = models.CharField(max_length=50,verbose_name='Артикул', unique=True, default=gen_pid,editable=False)
+    #price = models.DecimalField(max_digits=19,decimal_places=2,verbose_name='Цена')
     price = models.IntegerField(verbose_name='Цена')
     photo = models.ImageField(upload_to='photo',verbose_name='Фото')
     description = models.CharField(max_length=22,null=True,verbose_name='Краткое описание')
@@ -100,4 +106,13 @@ class product(models.Model):
             wpercent = (basewidth / float(img.size[0]))
             hsize = int((float(img.size[1]) * float(wpercent)))
             img = img.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
+            """
+            if not hasattr(img, '_getexif') or img._getexif() is None:
+                pass
+            else:
+                orientation = img._getexif().get(0x112)
+                rotate_values = {3: 180, 6: 270, 8: 90}
+                if orientation in rotate_values:
+                    img = img.rotate(rotate_values[orientation])
+            """
             img.save(self.photo.path, format='JPEG', quality=50)
