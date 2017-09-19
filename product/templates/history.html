@@ -31,7 +31,7 @@
 <td class='ui-widget-content'>{{i.user_id.first_name}} {{i.user_id.last_name}}</td>
 <td class='ui-widget-content'>{{i.product_id.product_type}}</td>
 <td class='ui-widget-content'>{{i.product_id.name}}</td>
-<td class='ui-widget-content'>{{i.action|yesno:"Продажа,Возврат"}} {{i.dates|time}}</td>
+<td class='ui-widget-content'>{{i.action|yesno:"Продажа,Возврат"}}</td>
 <td class='ui-widget-content'><a href={{MEDIA_URL}}/{{i.product_id.photo}} rel="lightbox">{{i.product_id.get_thum_256}}</a></td>
 {% if i.money_out > 0 %}
 <td class='ui-widget ui-state-error'>-{{i.money_out}}</td><tr>

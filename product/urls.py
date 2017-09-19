@@ -12,7 +12,7 @@ url(r'^product/(?P<pid>\w+\.0)/(?P<rev>[0-1])/$', views.get_product, name='get_p
 url(r'^print_barcode/(?P<pid>[0-9]+\.0)/$', views.print_barcode),
 #url(r'^print_barcode/$', views.print_barcode),
 url(r'^sale/$', views.sale_product, name='sale_product'),
-url(r'^bar/$', views.get_barcode, name='get_barcode'),
+url(r'^bar/$', views.old_get_barcode, name='old_get_barcode'),
 url(r'^history/$', views.history, name='history'),
 #url(r'^cart/', views.cart, name='cart'),
 url(r'^$', views.index, name='index'),

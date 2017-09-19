@@ -13,6 +13,11 @@ class discont_form(forms.Form):
 class date_input(forms.Form):
     class Media:
         js = ('js/print_barcode.js',)
+    date_input = forms.DateField(initial=timezone.now,label=u'Дата ', widget=SelectDateWidget(attrs={'class':'date_input'},years=range(2016, 2030)))
+
+class history_date_input(forms.Form):
+    class Media:
+        js = ('js/print_barcode.js',)
     #date_input = forms.DateField(initial=timezone.now,label=u'Дата ', widget=SelectDateWidget(attrs={'class':'date_input'},years=range(2016, 2030)))
     start_date = forms.DateField(label='Начало',widget=AdminDateWidget(format='SHORT_DATE_FORMAT'))
     end_date = forms.DateField(label='Конец',initial=timezone.now,widget=AdminDateWidget)

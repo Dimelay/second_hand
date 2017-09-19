@@ -43,7 +43,7 @@ header li a:hover, header li a.active {
 <ul >
 <li ><a href="/">Главная</a></li>
 {% if perms.product.print_barcode %}
-<li><a href="{% url 'get_barcode' %}">Печать ценников</a></li>
+<li><a href="{% url 'old_get_barcode' %}">Печать ценников</a></li>
 {% endif %}
 <li><a href="{% url 'history' %}">История</a></li>
 <li >{{request.user.last_name}} {{request.user.first_name}}</li>

@@ -9,14 +9,41 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils.formats import get_format
 from product.models import product, sale_log
-from product.forms import discont_form,SearchPoint, date_input
+from product.forms import discont_form,SearchPoint, date_input, history_date_input
 from django.http import Http404
 from bar import createBarCodes
+from old_bar import old_createBarCodes
 import datetime, cups
 
 #from django.views.decorators import csrf
 #from django.views.decorators.csrf import csrf_protect
 # Create your views here.
+@login_required(redirect_field_name=None)
+@permission_required('product.print_barcode',raise_exception=True)
+def old_get_barcode(request):
+    if request.method == 'GET':
+        pr = False
+        if request.GET:
+            try:
+                in_date = '%s-%s-%s' % (request.GET['date_input_year'],request.GET['date_input_month'],request.GET['date_input_day'])
+                print in_date
+                pr = product.objects.filter(in_date__date=in_date,sold='0')
+                return render(request,"product_list.html",{'product':pr})
+            except:
+                pass
+        return render(request,"bar.html",{'date_input':date_input()})
+    if request.method == 'POST':
+        bar_pid = date_input(request.POST)
+        if bar_pid.is_valid():
+            #print bar_pid.cleaned_data
+            pr = product.objects.filter(in_date__date=str(bar_pid.cleaned_data['date_input']),sold='0')
+            #for i in pr:
+                #print i.name,i.pid,i.price
+            pdf = old_createBarCodes(pr)
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+            response.write(pdf)
+    return response
 
 def user_login(request):
 	if request.method == 'POST':
@@ -69,7 +96,7 @@ def history(request):
     if request.method == 'GET':
         log = sale_log.objects.filter(dates__date=str(datetime.datetime.now())[:10],user_id=request.user).order_by('-dates')
     if request.method == 'POST':
-        d_form = date_input(request.POST)
+        d_form = history_date_input(request.POST)
         if d_form.is_valid():
             #log = sale_log.objects.filter(dates__date=request.POST['start_date'],user_id=request.user)
             input_format = get_format('DATE_INPUT_FORMATS')[0]
@@ -79,7 +106,7 @@ def history(request):
                 log = sale_log.objects.filter(dates__range=(start_date,end_date))
             else:
                 log = sale_log.objects.filter(dates__range=(start_date,end_date+datetime.timedelta(days=1)),user_id=request.user)
-    return render(request,"history.html",{'log':log,'date_input': date_input()})
+    return render(request,"history.html",{'log':log,'date_input': history_date_input()})
     #return render(request,"history.html",{'date_input':date_input()})
 
 
