@@ -15,8 +15,10 @@
 {{ date_input }}
 <input type="submit" value="Ok" />
 </form>
+{% history_result log %} 
+{% comment %}
 {{ log|get_summ}}
-
+{% endcomment %}
 <table style="margin: 0 auto;">
 <td class='ui-widget-header' >Дата</td>
 <td class='ui-widget-header' >Пользователь</td>

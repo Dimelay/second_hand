@@ -1,0 +1,15 @@
+{% load temp %}
+<table style="margin: 0 auto;">
+<td class='ui-widget-header' >Дата</td>
+<td class='ui-widget-header' >Приход</td>
+<td class='ui-widget-header' >Расход</td>
+<td class='ui-widget-header' >Итого</td>
+<tr>
+{% for i,v in stat %}
+<td class='ui-widget-content'>{{i|to_datetime|default_if_none:"Всего"}}</td>
+<td class='ui-widget-content'>{{v.money_in}}</td>
+<td class='ui-widget-content'>{{v.money_out}}</td>
+<td class='ui-widget-content'>{{v.money_all}}</td>
+<tr>
+{% endfor %}
+</table>
