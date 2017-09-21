@@ -30,7 +30,7 @@
 <tr>
 {% for user_name,user_values in users.items %}
 {% if user_name.first_name %}
-<td class='ui-widget-content'>{{user_name.first_name}}</td>
+<td class='ui-widget-content'>{{user_name.first_name}} {{user_name.last_name}}</td>
 {% else %}
 <td class='ui-widget-content'>Общая сумма</td>
 {% endif %}
