@@ -1,4 +1,5 @@
 {% load temp %}
+{% comment %}
 <table style="margin: 0 auto;">
 <td class='ui-widget-header' >Дата</td>
 <td class='ui-widget-header' >Приход</td>
@@ -6,6 +7,7 @@
 <td class='ui-widget-header' >Итого</td>
 <tr>
 {% for i,v in stat %}
+{{v.us.first_name}}
 <td class='ui-widget-content'>{{i|to_datetime|default_if_none:"Всего"}}</td>
 <td class='ui-widget-content'>{{v.money_in}}</td>
 <td class='ui-widget-content'>{{v.money_out}}</td>
@@ -13,3 +15,31 @@
 <tr>
 {% endfor %}
 </table>
+{% endcomment %}
+<table style="margin: 0 auto;">
+<td class='ui-widget-header' >Дата</td>
+<tr>
+{% for date,users in user_stat %}
+<td class='ui-widget-content'>
+{{date|to_datetime|default_if_none:"Всего"}}
+<table style="margin: 0 auto;">
+<td class='ui-widget-header' >Пользователь</td>
+<td class='ui-widget-header' >Приход</td>
+<td class='ui-widget-header' >Расход</td>
+<td class='ui-widget-header' >Всего</td>
+<tr>
+{% for user_name,user_values in users.items %}
+{% if user_name.first_name %}
+<td class='ui-widget-content'>{{user_name.first_name}}</td>
+{% else %}
+<td class='ui-widget-content'>Общая сумма</td>
+{% endif %}
+<td class='ui-widget-content'>{{user_values.money_in}}</td>
+<td class='ui-widget-content'>{{user_values.money_out}}</td>
+<td class='ui-widget-content'>{{user_values.money_all}}</td>
+<tr>
+{% endfor %}
+</table><tr>
+{% endfor %}
+</table>
+

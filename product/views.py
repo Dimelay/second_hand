@@ -26,7 +26,6 @@ def old_get_barcode(request):
         if request.GET:
             try:
                 in_date = '%s-%s-%s' % (request.GET['date_input_year'],request.GET['date_input_month'],request.GET['date_input_day'])
-                print in_date
                 pr = product.objects.filter(in_date__date=in_date,sold='0')
                 return render(request,"product_list.html",{'product':pr})
             except:
@@ -94,7 +93,10 @@ def sale_product(request):
 @login_required(redirect_field_name=None)
 def history(request):
     if request.method == 'GET':
-        log = sale_log.objects.filter(dates__date=str(datetime.datetime.now())[:10],user_id=request.user).order_by('-dates')
+        if request.user.has_perm('product.view_all'):
+            log = sale_log.objects.filter(dates__date=str(datetime.datetime.now())[:10]).order_by('-dates')
+        else:
+            log = sale_log.objects.filter(dates__date=str(datetime.datetime.now())[:10],user_id=request.user).order_by('-dates')
     if request.method == 'POST':
         d_form = history_date_input(request.POST)
         if d_form.is_valid():
@@ -103,7 +105,7 @@ def history(request):
             start_date = datetime.datetime.strptime(request.POST['start_date'],input_format)
             end_date = datetime.datetime.strptime(request.POST['end_date'],input_format)
             if request.user.has_perm('product.view_all'):
-                log = sale_log.objects.filter(dates__range=(start_date,end_date))
+                log = sale_log.objects.filter(dates__range=(start_date,end_date+datetime.timedelta(days=1)))
             else:
                 log = sale_log.objects.filter(dates__range=(start_date,end_date+datetime.timedelta(days=1)),user_id=request.user)
     return render(request,"history.html",{'log':log,'date_input': history_date_input()})
